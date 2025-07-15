@@ -1,0 +1,24 @@
+{
+  "name": "mcp-weather-travel",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --experimental-strip-types --watch --env-file=.env src/index.ts",
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "24.0.13",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.15.1",
+    "axios": "1.10.0"
+  }
+}
