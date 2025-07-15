@@ -4,9 +4,12 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { getWeather } from './tools/weather.js';
 import {
   CallToolRequestSchema,
+  ListResourcesRequestSchema,
   ListToolsRequestSchema,
+  ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { fetchFlights } from './tools/flights.js';
+import { getAirportsResource } from './resources/airports.js';
 
 const server = new Server(
   {
@@ -101,6 +104,42 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     default:
       throw new Error(`Unknown tool: ${name}`);
+  }
+});
+
+server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  return {
+    resources: [
+      {
+        name: 'airports',
+        description: 'Airports Database',
+        mimeType: 'application/json',
+        uri: 'airports',
+      },
+    ],
+  };
+});
+
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params;
+
+  switch (uri) {
+    case 'airports': {
+      const result = await getAirportsResource();
+
+      return {
+        contents: [
+          {
+            uri: 'airports',
+            mimeType: 'application/json',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
+    default:
+      throw new Error(`Unknown resource: ${uri}`);
   }
 });
 
