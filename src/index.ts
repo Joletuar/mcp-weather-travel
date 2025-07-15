@@ -12,6 +12,7 @@ import { fetchFlights } from './tools/flights.js';
 import { getAirportsResource } from './resources/airports.js';
 import { getCitiesResource } from './resources/cities.js';
 import { getTouristResource } from './resources/tourist.js';
+import { calculateDistance } from './tools/distance.js';
 
 const server = new Server(
   {
@@ -67,6 +68,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ['from', 'to', 'date'],
         },
       },
+      {
+        name: 'calculate_distance',
+        description: 'Calculates distance between two cities',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            from: {
+              type: 'string',
+              description: 'Departure city name',
+            },
+            to: {
+              type: 'string',
+              description: 'Destination city name',
+            },
+          },
+          required: ['from', 'to'],
+        },
+      },
     ],
   };
 });
@@ -93,6 +112,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     case 'fetch_flights': {
       const result = await fetchFlights(args as any);
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
+    case 'calculate_distance': {
+      const result = await calculateDistance(args as any);
 
       return {
         content: [
