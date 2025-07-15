@@ -51,3 +51,21 @@ Este proyecto está en proceso de desarrollo y aún no está terminado. Algunas 
 
 - Node.js
 - pnpm
+
+## Comandos Disponibles
+
+### Desarrollo
+
+- `pnpm dev`: Ejecuta el servidor en modo de desarrollo con soporte para recarga en caliente y variables de entorno desde el archivo `.env`.
+
+### Construcción
+
+- `pnpm build`: Compila el proyecto TypeScript a JavaScript en la carpeta `dist`.
+
+### Producción
+
+- `pnpm start`: Construye el proyecto y ejecuta el servidor desde la carpeta `dist`.
+
+### Inspector
+
+- `pnpm inspector`: Ejecuta el inspector de Model Context Protocol para depurar el servidor.
