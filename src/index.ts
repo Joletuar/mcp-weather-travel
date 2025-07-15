@@ -4,6 +4,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { getWeather } from './tools/weather.js';
 import {
   CallToolRequestSchema,
+  GetPromptRequestSchema,
+  ListPromptsRequestSchema,
   ListResourcesRequestSchema,
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
@@ -13,6 +15,8 @@ import { getAirportsResource } from './resources/airports.js';
 import { getCitiesResource } from './resources/cities.js';
 import { getTouristResource } from './resources/tourist.js';
 import { calculateDistance } from './tools/distance.js';
+import { getWeatherAnalysisPrompt } from './prompts/weather-analysis.js';
+import { getTravelSuggestionsPrompt } from './prompts/travel-suggestions.js';
 
 const server = new Server(
   {
@@ -28,7 +32,7 @@ const server = new Server(
   }
 );
 
-server.setRequestHandler(ListToolsRequestSchema, async () => {
+server.setRequestHandler(ListToolsRequestSchema, () => {
   return {
     tools: [
       {
@@ -141,7 +145,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
+server.setRequestHandler(ListResourcesRequestSchema, () => {
   return {
     resources: [
       {
@@ -213,6 +217,101 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
 
     default:
       throw new Error(`Unknown resource: ${uri}`);
+  }
+});
+
+server.setRequestHandler(ListPromptsRequestSchema, () => {
+  return {
+    prompts: [
+      {
+        name: 'weather_analysis_prompt',
+        description: 'A prompt to analyze weather data for a specific city',
+        arguments: [
+          {
+            name: 'city',
+            type: 'string',
+            description: 'The city to analyze weather for',
+            required: true,
+          },
+          {
+            name: 'days',
+            type: 'integer',
+            description: 'Number of days to analyze weather data for',
+            required: false,
+          },
+        ],
+      },
+      {
+        name: 'travel_suggestions_prompt',
+        description:
+          'A prompt to get travel suggestions based on weather and tourist resources',
+        arguments: [
+          {
+            name: 'city',
+            type: 'string',
+            description: 'The city to get travel suggestions for',
+            required: true,
+          },
+          {
+            name: 'travelDate',
+            type: 'string',
+            description: 'The date of travel in YYYY-MM-DD format',
+            required: true,
+          },
+          {
+            name: 'preferences',
+            type: 'string',
+            description:
+              'User preferences for travel suggestions (e.g., cultural, adventure)',
+            required: false,
+          },
+        ],
+      },
+    ],
+  };
+});
+
+server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+
+  if (!args || Object.values(args).length === 0)
+    throw new Error('Arguments are required');
+
+  switch (name) {
+    case 'weather_analysis_prompt': {
+      const result = getWeatherAnalysisPrompt(args as any);
+
+      return {
+        messages: [
+          {
+            role: 'user',
+            content: {
+              type: 'text',
+              text: result,
+            },
+          },
+        ],
+      };
+    }
+
+    case 'travel_suggestions_prompt': {
+      const result = await getTravelSuggestionsPrompt(args as any);
+
+      return {
+        messages: [
+          {
+            role: 'user',
+            content: {
+              type: 'text',
+              text: result,
+            },
+          },
+        ],
+      };
+    }
+
+    default:
+      throw new Error(`Unknown prompt: ${name}`);
   }
 });
 
