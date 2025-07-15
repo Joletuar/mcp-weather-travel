@@ -10,6 +10,8 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { fetchFlights } from './tools/flights.js';
 import { getAirportsResource } from './resources/airports.js';
+import { getCitiesResource } from './resources/cities.js';
+import { getTouristResource } from './resources/tourist.js';
 
 const server = new Server(
   {
@@ -83,7 +85,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         content: [
           {
             type: 'text',
-            text: JSON.stringify(result),
+            text: JSON.stringify(result, null, 2),
           },
         ],
       };
@@ -96,7 +98,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         content: [
           {
             type: 'text',
-            text: JSON.stringify(result),
+            text: JSON.stringify(result, null, 2),
           },
         ],
       };
@@ -115,6 +117,18 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
         description: 'Airports Database',
         mimeType: 'application/json',
         uri: 'airports',
+      },
+      {
+        name: 'cities',
+        description: 'Cities Database',
+        mimeType: 'application/json',
+        uri: 'cities',
+      },
+      {
+        name: 'tourist-info',
+        description: 'Tourist Information Database',
+        mimeType: 'application/json',
+        uri: 'tourist-info',
       },
     ],
   };
@@ -137,6 +151,33 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
         ],
       };
     }
+
+    case 'cities': {
+      const result = await getCitiesResource();
+
+      return {
+        contents: [
+          {
+            uri: 'cities',
+            mimeType: 'application/json',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
+    case 'tourist-info':
+      const result = await getTouristResource();
+
+      return {
+        contents: [
+          {
+            uri: 'tourist-info',
+            mimeType: 'application/json',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
 
     default:
       throw new Error(`Unknown resource: ${uri}`);
