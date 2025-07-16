@@ -22,7 +22,7 @@ const cities: City[] = [
     timezone: 'GMT-5',
     description:
       'The capital city of Ecuador, known for its well-preserved colonial center.',
-    highlights: ['Historic Center', 'El Panecillo', 'TelefériQo'],
+    highlights: ['Historic Center', 'El Panecillo', 'Teleférico'],
     bestTimeToVisit: 'June to September',
     coordinates: {
       lat: -0.1807,

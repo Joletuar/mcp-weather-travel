@@ -71,20 +71,18 @@ export async function getWeather(props: Props) {
     for (let i = 0; i <= 3; i++) {
       const date = new Date(hourly.time[i]);
 
-      if (date.getDate() === today.getDate()) {
-        forecast.push({
-          date: date.toISOString().split('T')[0] || '',
-          temperature: hourly.temperature_2m[i],
-          description: getWeatherDescription(current.weathercode),
-        });
-      }
+      forecast.push({
+        date: date.toISOString().split('T')[0] || '',
+        temperature: hourly.temperature_2m[i],
+        description: getWeatherDescription(current.weathercode),
+      });
     }
 
     const weatherData: WeatherData = {
       current: {
         temperature: current.temperature_2m,
         description: getWeatherDescription(current.weathercode),
-        humidity: current.relative_humidity_2m,
+        humidity: hourly.relative_humidity_2m[1],
         windSpeed: current.wind_speed_10m,
       },
       forecast: forecast,
