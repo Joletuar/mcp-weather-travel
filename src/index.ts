@@ -17,6 +17,7 @@ import { getTouristResource } from './resources/tourist.js';
 import { calculateDistance } from './tools/distance.js';
 import { getWeatherAnalysisPrompt } from './prompts/weather-analysis.js';
 import { getTravelSuggestionsPrompt } from './prompts/travel-suggestions.js';
+import { getRecommendations } from './tools/recommendations.js';
 
 const server = new Server(
   {
@@ -90,6 +91,29 @@ server.setRequestHandler(ListToolsRequestSchema, () => {
           required: ['from', 'to'],
         },
       },
+      {
+        name: 'get_recomendations',
+        description:
+          'Provides travel recommendations based on destination, travel date, and duration',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            destination: {
+              type: 'string',
+              description: 'Destination city name',
+            },
+            travelDate: {
+              type: 'string',
+              description: 'Travel date in YYYY-MM-DD format',
+            },
+            duration: {
+              type: 'integer',
+              description: 'Duration of stay in days',
+            },
+          },
+          required: ['destination', 'travelDate'],
+        },
+      },
     ],
   };
 });
@@ -129,6 +153,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     case 'calculate_distance': {
       const result = await calculateDistance(args as any);
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+
+    case 'get_recomendations': {
+      const result = await getRecommendations(args as any);
 
       return {
         content: [
