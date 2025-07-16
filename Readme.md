@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Este proyecto es un asistente basado en el protocolo Model Context Protocol (MCP) que proporciona herramientas y recursos para consultar información sobre el clima y vuelos, así como una base de datos de aeropuertos. Actualmente, el proyecto está en desarrollo y no está terminado.
+Este proyecto es un asistente basado en el protocolo Model Context Protocol (MCP) que proporciona herramientas y recursos para consultar información sobre el clima, vuelos y destinos turísticos. Su objetivo principal es explorar e implementar todo lo relacionado con los MCPs. Actualmente, el proyecto está en desarrollo y no está terminado.
 
 ## Características
 
@@ -15,18 +15,51 @@ Este proyecto es un asistente basado en el protocolo Model Context Protocol (MCP
      - `city` (string, requerido): Nombre de la ciudad.
 
 2. **fetch_flights**
+
    - **Descripción**: Recupera vuelos disponibles para una ruta específica.
    - **Esquema de entrada**:
      - `from` (string, requerido): Ciudad de origen.
      - `to` (string, requerido): Ciudad de destino.
      - `date` (string, formato de fecha, requerido): Fecha del viaje en formato YYYY-MM-DD.
 
+3. **travel_suggestions**
+
+   - **Descripción**: Proporciona sugerencias de viaje basadas en preferencias del usuario y datos disponibles.
+   - **Esquema de entrada**:
+     - `preferences` (object, opcional): Preferencias del usuario como tipo de clima, actividades, etc.
+
+4. **weather_analysis**
+
+   - **Descripción**: Analiza patrones climáticos históricos para una región específica.
+   - **Esquema de entrada**:
+     - `region` (string, requerido): Nombre de la región.
+     - `date_range` (object, requerido): Rango de fechas para el análisis.
+
+5. **distance**
+
+   - **Descripción**: Calcula la distancia entre dos ubicaciones geográficas.
+
+6. **recommendations**
+   - **Descripción**: Genera recomendaciones personalizadas basadas en datos de usuario y contexto.
+
 ### Recursos
 
 1. **airports**
+
    - **Descripción**: Base de datos de aeropuertos.
    - **MIME**: `application/json`
    - **URI**: `airports`
+
+2. **cities**
+
+   - **Descripción**: Base de datos de ciudades con información relevante para viajes.
+   - **MIME**: `application/json`
+   - **URI**: `cities`
+
+3. **tourist**
+   - **Descripción**: Base de datos de atracciones turísticas y actividades recomendadas.
+   - **MIME**: `application/json`
+   - **URI**: `tourist`
 
 ## Estado del Proyecto
 
@@ -49,8 +82,15 @@ Este proyecto está en proceso de desarrollo y aún no está terminado. Algunas 
 
 ## Requisitos
 
-- Node.js
-- pnpm
+- **Plataforma**:
+  - Node.js
+  - pnpm
+- **Dependencias**:
+  - `@modelcontextprotocol/sdk`: SDK para trabajar con el protocolo MCP.
+  - `axios`: Biblioteca para realizar solicitudes HTTP.
+- **Dependencias de desarrollo**:
+  - `@types/node`: Tipos para Node.js.
+  - `typescript`: Compilador de TypeScript.
 
 ## Comandos Disponibles
 
